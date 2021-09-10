@@ -1,3 +1,0 @@
-﻿  main.cpp
-C:\Users\Austin Blanchard\Documents\Code\ConwayGOL\ConwayGOL\main.cpp(50,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  ConwayGOL.vcxproj -> C:\Users\Austin Blanchard\Documents\Code\ConwayGOL\x64\Debug\ConwayGOL.exe
