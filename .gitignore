@@ -1,5 +1,5 @@
 x64/
 ConwayGOL.sln
 ConwayGOL/x64
-ConwayGOL/*.vcxproj
+ConwayGOL/*.vcxproj*
 .vs/
