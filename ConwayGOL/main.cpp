@@ -16,30 +16,6 @@ const short CELL_DIMENSION = 5;
 const short FILTER_WIDTH = (SCREEN_WIDTH / CELL_DIMENSION);
 const short FILTER_HEIGHT = (SCREEN_HEIGHT / CELL_DIMENSION);
 
-short countNeighbors(bool a[FILTER_WIDTH][FILTER_HEIGHT], int x, int y) {
-	short count = 0;
-
-	
-	if ((y + 1) < FILTER_HEIGHT && a[x][y + 1]) { count++; }
-	if ((y - 1) >= 0 && a[x][y - 1]) { count++; }
-
-	if ((x - 1) >= 0) {
-		if ((y - 1) >= 0 && a[x - 1][y - 1]) { count++; }
-		if ((y + 1) < FILTER_HEIGHT && a[x - 1][y + 1]) { count++; }
-		if (a[x - 1][y]) { count++; }
-	}
-
-	if ((x + 1) < FILTER_WIDTH) {
-		if (a[x + 1][y]) { count++; }
-		if ((y - 1) >= 0 && a[x + 1][y - 1]) { count++; }
-		if ((y + 1) < FILTER_HEIGHT && a[x + 1][y + 1]) { count++; }
-	}
-	
-
-	
-
-	return count;
-}
 
 std::pair<short, short> filterToPixelLoc(short i, short j) {
 	return std::make_pair((i * CELL_DIMENSION), (j * CELL_DIMENSION));
