@@ -7,6 +7,7 @@
 #include <cmath>
 #include <utility>
 #include <iostream>
+#include "cellFilter.h"
 
 //Screen dimension constants
 const short SCREEN_WIDTH = 1280;
@@ -40,37 +41,8 @@ short countNeighbors(bool a[FILTER_WIDTH][FILTER_HEIGHT], int x, int y) {
 	return count;
 }
 
-
-
 std::pair<short, short> filterToPixelLoc(short i, short j) {
 	return std::make_pair((i * CELL_DIMENSION), (j * CELL_DIMENSION));
-}
-
-void initializeCellFilter(bool filter[FILTER_WIDTH][FILTER_HEIGHT]) {
-	srand(time(0));
-	for (int i = 0; i < FILTER_WIDTH; i++) {
-		for (int j = 0; j < FILTER_HEIGHT; j++) {
-			short random = rand() % 1000;
-			filter[i][j] = (random < 500) ? 1 : 0;
-		}
-	}
-}
-
-void initializeOutputFilter(bool filter[FILTER_WIDTH][FILTER_HEIGHT]) {
-	for (int i = 0; i < FILTER_WIDTH; i++) {
-		for (int j = 0; j < FILTER_HEIGHT; j++) {
-			filter[i][j] = 0;
-		}
-	}
-}
-
-void printFilter(bool filter[FILTER_WIDTH][FILTER_HEIGHT], std::ostream& out = std::cout) {
-	for (int i = 0; i < FILTER_WIDTH; i++) {
-		for (int j = 0; j < FILTER_HEIGHT; j++) {
-			out << filter[i][j] << " ";
-		}
-		out << std::endl;
-	}
 }
 
 void clearPanel(SDL_Rect& rect, SDL_Renderer* r) {
@@ -116,55 +88,53 @@ int main( int argc, char* argv[] ) {
 	int frameCounter = 0;
 	int neighbors = 0;
 
-	bool cellFilter[FILTER_WIDTH][FILTER_HEIGHT];
-	bool output[FILTER_WIDTH][FILTER_HEIGHT];
-
 	// initialize cellFilter 
-	initializeCellFilter(cellFilter);
-	initializeOutputFilter(output);
+	CellFilter mainFilter(FILTER_WIDTH, FILTER_HEIGHT);
+	mainFilter.initializeCellFilter();
 
-	// printFilter(cellFilter);
+
+	SDL_Event e;
 
 	while (isRunning) {
-
-		SDL_Event e;
 
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT)
 				isRunning = false;
 		}
 
+		// clear render panel
 		clearPanel(cell, renderer);
-		initializeOutputFilter(output);
+
+		// clear the output filter
+		mainFilter.clearOutputFilter();
+
+		// set the draw color
 		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
 
-		for (int i = 0; i < FILTER_WIDTH; i++) {
-			for (int j = 0; j < FILTER_HEIGHT; j++) {
-				short neighbors = countNeighbors(cellFilter, i, j);
+		// Conway Logic
+		for (int i = 0; i < mainFilter.getX(); i++) {
+			for (int j = 0; j < mainFilter.getY(); j++) {
+				short neighbors = mainFilter.countNeighbors(i, j);
 
-				if (neighbors == 2 && cellFilter[i][j])
-					output[i][j] = true;
+				if (neighbors == 2 && mainFilter.getCellState(i, j))
+					mainFilter.setOutputState(i, j, true);
 				else if (neighbors == 3)
-					output[i][j] = true;
+					mainFilter.setOutputState(i, j, true);
 				else
-					output[i][j] = false;
+					mainFilter.setOutputState(i, j, false);
 				
-				if (output[i][j]) {
+				if (mainFilter.getOutputState(i, j)) {
 					std::pair<short, short> coord = filterToPixelLoc(i, j);
 					cell = SDL_Rect{ coord.first, coord.second, CELL_DIMENSION, CELL_DIMENSION };
 					SDL_RenderFillRect(renderer, &cell);
 				}
-
-			}
-		}
-
-		for (int i = 0; i < FILTER_WIDTH; i++) {
-			for (int j = 0; j < FILTER_HEIGHT; j++) {
-				cellFilter[i][j] = output[i][j];
 			}
 		}
 		
+		// copy the output Filter to the cell filter
+		mainFilter.updateCellFilterFromOutputFilter();
 
+		// present the frame
 		SDL_RenderPresent(renderer);
 	}
 
