@@ -1,6 +1,7 @@
 
-
 #include <SDL.h>
+// #include <SDL_Rect.h>
+
 #include <stdio.h>
 #include <ctime>
 #include <cstdlib>
@@ -30,7 +31,7 @@ void clearPanel(SDL_Rect& rect, SDL_Renderer* r) {
 	for (int i = 0; i < FILTER_WIDTH; i++) {
 		for (int j = 0; j < FILTER_HEIGHT; j++) {
 			p = filterToPixelLoc(i, j);
-			rect = SDL_Rect{p.first , p.second, CELL_DIMENSION, CELL_DIMENSION };
+			rect = SDL_Rect{ p.first, p.second, CELL_DIMENSION, CELL_DIMENSION };
 			SDL_RenderFillRect(r, &rect);
 		}
 	}
@@ -67,7 +68,6 @@ int main( int argc, char* argv[] ) {
 	// initialize cellFilter 
 	CellFilter mainFilter(FILTER_WIDTH, FILTER_HEIGHT);
 	mainFilter.initializeCellFilter();
-
 
 	SDL_Event e;
 
