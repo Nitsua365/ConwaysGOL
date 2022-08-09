@@ -1,6 +1,5 @@
 
 #include <SDL.h>
-// #include <SDL_Rect.h>
 
 #include <stdio.h>
 #include <ctime>
@@ -9,6 +8,8 @@
 #include <utility>
 #include <iostream>
 #include "cellFilter.h"
+#include <thread>
+#include <unistd.h>
 
 //Screen dimension constants
 const short SCREEN_WIDTH = 1280;
@@ -112,6 +113,7 @@ int main( int argc, char* argv[] ) {
 
 		// present the frame
 		SDL_RenderPresent(renderer);
+		// sleep(0.1);
 	}
 
 	// Destroy window
